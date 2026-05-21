@@ -1,0 +1,393 @@
+workflow:
+  name: compliance_workflow
+  version: 1.0.0
+  description: |
+    Comprehensive workflow for ensuring oil & gas operations compliance with
+    safety, environmental, and regulatory requirements across multiple jurisdictions.
+
+prerequisites:
+  required_data:
+    - facility_description: type, location, size, operations
+    - regulatory_jurisdiction: country, state, local authorities
+    - operating_permits: current permits and conditions
+    - incident_history: past violations, accidents, spills
+  optional_data:
+    - audit_reports: internal and external audits
+    - inspection_records: regulatory inspections
+    - industry_benchmarks: peer company performance
+
+steps:
+
+  1_regulatory_mapping:
+    name: Regulatory Requirements Mapping
+    description: Identify all applicable regulations
+    tasks:
+      - identify_federal_requirements:
+          united_states:
+            - osha: "Occupational Safety and Health Administration"
+            - epa: "Environmental Protection Agency"
+            - dot_phmsa: "Pipeline and Hazardous Materials Safety"
+            - bsee: "Bureau of Safety and Environmental Enforcement"
+            - blm: "Bureau of Land Management"
+          international:
+            - eu_seveso: "Major accident hazards"
+            - uk_hse: "Health and Safety Executive"
+            - canada_cer: "Canada Energy Regulator"
+            - norway_psa: "Petroleum Safety Authority"
+      - identify_state_requirements:
+          examples:
+            - texas_rrc: "Railroad Commission of Texas"
+            - california_calgem: "California Geologic Energy Management"
+            - alaska_aogcc: "Alaska Oil and Gas Conservation Commission"
+            - louisiana_dnrc: "Department of Natural Resources"
+      - identify_local_requirements:
+          types:
+            - air_quality_management_districts
+            - county_permits
+            - municipal_ordinances
+            - coastal_commissions
+      - map_permit_requirements:
+          categories:
+            - construction_permits: "Building, electrical, mechanical"
+            - operating_permits: "Air, water, waste"
+            - safety_permits: "Pressure vessels, boilers"
+            - environmental_permits: "NEPA, EIA, wetlands"
+    outputs:
+      - regulatory_register
+      - permit_inventory
+      - compliance_calendar
+
+  2_gap_analysis:
+    name: Compliance Gap Analysis
+    description: Assess current compliance status
+    tasks:
+      - review_existing_permits:
+          elements:
+            - permit_conditions: "All requirements"
+            - reporting_obligations: "Frequency, content"
+            - monitoring_requirements: "Parameters, methods"
+            - expiration_dates: "Renewal timeline"
+      - evaluate_against_regulations:
+          standards:
+            - osha_psm: "14 elements"
+            - epa_rmp: "Program 3 requirements"
+            - api_recommended_practices: "Industry standards"
+          gaps:
+            - missing_programs: "Not implemented"
+            - incomplete_programs: "Partial implementation"
+            - outdated_programs: "Need updating"
+      - assess_documentation:
+          review:
+            - policies_and_procedures: "Current and approved"
+            - training_records: "Completeness, currency"
+            - inspection_records: "Frequency, findings"
+            - maintenance_records: "Mechanical integrity"
+    outputs:
+      - gap_analysis_report
+      - compliance_scorecard
+      - priority_action_items
+
+  3_psm_implementation:
+    name: Process Safety Management Implementation
+    description: Ensure OSHA PSM compliance (if applicable)
+    tasks:
+      - employee_participation:
+          requirements:
+            - consultation_on_psi_development
+            - access_to_psi
+            - participation_in_hazreviews
+      - process_safety_information:
+          content:
+            - chemicals_hazards: "Toxicity, flammability, reactivity"
+            - technology: "Process chemistry, design basis"
+            - equipment: "Codes, specs, materials of construction"
+      - process_hazard_analysis:
+          methods:
+            - hazop: "Preferred method"
+            - what_if: "Simpler processes"
+            - checklist: "Standard designs"
+          frequency: "Every 5 years, or after incident/MOC"
+      - operating_procedures:
+          content:
+            - startup_procedures
+            - normal_operations
+            - temporary_operations
+            - emergency_shutdown
+            - normal_shutdown
+            - startup_after_emergency
+      - training:
+          elements:
+            - initial_training: "Before assignment"
+            - refresher_training: "Every 3 years"
+            - documentation: "Records maintained"
+      - contractors:
+          requirements:
+            - safety_performance_evaluation
+            - orientation_and_training
+            - work_authorization
+      - pre_startup_safety_review:
+          triggers:
+            - new_facilities
+            - significant_modifications
+            - changes_in_process
+      - mechanical_integrity:
+          equipment:
+            - pressure_vessels: "Inspection per API 510"
+            - storage_tanks: "Inspection per API 653"
+            - piping: "Inspection per API 570"
+            - relief_systems: "Testing per API 576"
+            - controls: "Instrument calibration"
+      - hot_work_permits:
+          requirements:
+            - written_authorization
+            - fire_watch
+            - 35-foot_rule
+            - ppe_requirements
+      - management_of_change:
+          elements:
+            - technical_basis
+            - safety_and_health_impact
+            - modifications_to_procedures
+            - training_requirements
+            - authorization
+      - incident_investigation:
+          requirements:
+            - timely_investigation: "Within 48 hours"
+            - root_cause_analysis
+            - resolution_tracking
+      - emergency_planning:
+          elements:
+            - emergency_action_plan
+            - coordination_with_responders
+            - drills_and_exercises
+      - compliance_audits:
+          frequency: "Every 3 years"
+          scope: "All 14 PSM elements"
+      - trade_secrets:
+          requirements: "Procedures for protecting confidential information"
+    outputs:
+      - psm_compliance_assessment
+      - implementation_plan
+      - documentation_package
+
+  4_environmental_compliance:
+    name: Environmental Compliance Program
+    description: Ensure environmental regulatory compliance
+    tasks:
+      - air_quality_compliance:
+          programs:
+            - title_v_permits: "Major source requirements"
+            - nsr_psd: "New source review"
+            - leak_detection: "LDAR program"
+            - emissions_reporting: "GHG, criteria pollutants"
+          monitoring:
+            - continuous_emissions_monitoring: "CEMS"
+            - periodic_stack_testing
+            - ambient_air_monitoring
+      - water_compliance:
+          programs:
+            - npdes_permits: "Discharge permits"
+            - stormwater_permits: "Industrial activity"
+            - swwp: "Spill prevention"
+            - produced_water: "Management and disposal"
+          monitoring:
+            - discharge_monitoring_reports: "DMRs"
+            - whole_effluent_toxicity: "WET tests"
+      - waste_management:
+          programs:
+            - rcra_hazardous_waste: "Generator status"
+            - manifesting: "Tracking and documentation"
+            - land_disposal_restrictions: "LDR compliance"
+            - universal_waste: "Batteries, lamps, etc."
+          minimization:
+            - waste_audits
+            - recycling_programs
+            - source_reduction
+      - spill_prevention:
+          programs:
+            - spcc_plan: "Oil storage facilities"
+            - facility_response_plan: "Qualified facilities"
+            - integrity_testing: "Tanks and piping"
+            - secondary_containment
+      - remediation:
+          programs:
+            - rcra_corrective_action
+            - state_cleanup_programs
+            - voluntary_cleanup
+    outputs:
+      - environmental_compliance_plan
+      - monitoring_program
+      - reporting_calendar
+
+  5_safety_systems_compliance:
+    name: Safety Systems Compliance
+    description: Ensure safety instrumented systems compliance
+    tasks:
+      - sil_verification:
+          standard: "IEC 61511"
+          activities:
+            - sil_selection: "Risk-based approach"
+            - sil_verification: "PFD calculations"
+            - architectural_constraints
+            - systematic_capabilities
+      - safety_requirements_specification:
+          content:
+            - safety_functional_requirements
+            - safety_integrity_requirements
+            - application_program_safety
+      - design_and_development:
+          requirements:
+            - hardware_safety_integrity
+            - systematic_safety_integrity
+            - software_safety_lifecycle
+      - installation_and_commissioning:
+          activities:
+            - factory_acceptance_testing
+            - site_acceptance_testing
+            - functional_testing
+            - proof_testing
+      - operations_and_maintenance:
+          requirements:
+            - proof_test_procedures
+            - proof_test_intervals
+            - bypass_management
+            - modification_management
+      - management_of_functional_safety:
+          elements:
+            - safety_lifecycle_structure
+            - verification_and_validation
+            - functional_safety_assessment
+            - audit_and_reviews
+    outputs:
+      - sis_compliance_assessment
+      - functional_safety_plan
+      - proof_test_schedule
+
+  6_training_program:
+    name: Training and Competency Program
+    description: Develop comprehensive training program
+    tasks:
+      - identify_training_requirements:
+          categories:
+            - regulatory_required: "OSHA, EPA mandated"
+            - job_specific: "Operator, maintenance, specialist"
+            - safety_critical: "Emergency response, SIS"
+            - management: "Leadership, incident command"
+      - develop_training_materials:
+          formats:
+            - classroom_training
+            - hands_on_practical
+            - computer_based
+            - on_the_job
+            - simulations
+      - establish_competency_standards:
+          elements:
+            - knowledge_requirements
+            - skill_demonstrations
+            - assessment_methods
+            - revalidation_frequency
+      - implement_tracking_system:
+          features:
+            - individual_training_records
+            - expiration_alerts
+            - compliance_dashboard
+            - gap_reports
+    outputs:
+      - training_matrix
+      - training_materials
+      - competency_standards
+
+  7_audit_program:
+    name: Audit and Inspection Program
+    description: Establish ongoing compliance verification
+    tasks:
+      - internal_audit_program:
+          scope:
+            - compliance_audits: "Regulatory requirements"
+            - management_system_audits: "ISO 45001, 14001"
+            - process_safety_audits: "PSM, risk controls"
+          frequency:
+            - annual: "High risk areas"
+            - triennial: "Full PSM audit"
+      - regulatory_inspection_readiness:
+          preparation:
+            - document_organization
+            - mock_inspections
+            - employee_interview_prep
+            - facility_condition
+      - third_party_audits:
+          types:
+            - certification_audits: "ISO, API Q1"
+            - customer_audits: "Supply chain requirements"
+            - insurance_audits: "Risk assessment"
+      - corrective_action_tracking:
+          system:
+            - finding_categorization
+            - root_cause_analysis
+            - action_plan_development
+            - closure_verification
+    outputs:
+      - audit_schedule
+      - audit_protocols
+      - tracking_system
+
+  8_continuous_improvement:
+    name: Continuous Improvement Program
+    description: Drive ongoing compliance improvement
+    tasks:
+      - performance_monitoring:
+          metrics:
+            - leading_indicators: "Training completion, inspections"
+            - lagging_indicators: "Incidents, violations"
+            - compliance_metrics: "Permit deviations, report timeliness"
+      - management_review:
+          inputs:
+            - audit_results
+            - incident_investigations
+            - regulatory_changes
+            - industry_best_practices
+          outputs:
+            - policy_updates
+            - resource_allocation
+            - priority_setting
+      - lessons_learned:
+          process:
+            - incident_analysis
+            - near_miss_reporting
+            - industry_sharing
+            - implementation
+      - technology_updates:
+          areas:
+            - monitoring_systems
+            - reporting_tools
+            - training_platforms
+            - document_management
+    outputs:
+      - kpi_dashboard
+      - improvement_plan
+      - management_review_package
+
+outputs:
+  compliance_status:
+    overall_assessment: "Compliant, minor gaps, major gaps"
+    risk_rating: "High, medium, low"
+    priority_actions: "Immediate, short-term, long-term"
+  
+  documentation:
+    regulatory_register: "All applicable requirements"
+    permit_tracker: "Status and renewals"
+    compliance_calendar: "Reporting deadlines"
+    audit_schedule: "Planned audits"
+  
+  implementation_plan:
+    gap_closure: "Actions to achieve compliance"
+    resource_requirements: "Budget and personnel"
+    timeline: "Milestones and deadlines"
+    responsibility_matrix: "Who does what"
+
+references:
+  - osha: "29 CFR 1910.119 - Process Safety Management"
+  - epa: "40 CFR 68 - Risk Management Program"
+  - api: "API RP 754 - Process Safety Performance Indicators"
+  - ccps: "Center for Chemical Process Safety guidelines"
+  - iec: "IEC 61511 - Functional Safety"

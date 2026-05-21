@@ -1,0 +1,368 @@
+workflow:
+  name: refinery_planning
+  version: 1.0.0
+  description: |
+    Comprehensive workflow for refinery configuration planning, process unit
+    selection, and product slate optimization for new or revamped facilities.
+
+prerequisites:
+  required_data:
+    - crude_slate: types, volumes, assay data
+    - product_requirements: specifications, volumes, markets
+    - site_constraints: plot space, utilities, environmental
+    - economic_parameters: capital costs, operating costs, product prices
+  optional_data:
+    - existing_equipment: for revamps or expansions
+    - market_forecasts: demand trends, price differentials
+    - regulatory_requirements: product specs, emissions limits
+
+steps:
+
+  1_crude_slate_analysis:
+    name: Crude Slate Analysis
+    description: Characterize feedstock and blend optimization
+    tasks:
+      - analyze_individual_crudes:
+          properties:
+            - api_gravity: "Light (>35°), Medium (25-35°), Heavy (<25°)"
+            - sulfur_content: "Sweet (<0.5%), Sour (>0.5%)"
+            - tan: "Total acid number"
+            - metals: "Ni, V content"
+            - distillation_curve: "TBP or ASTM D86"
+            - resid_content: "Fraction > 1000°F"
+      - optimize_crude_blend:
+          objectives:
+            - meet_product_specifications
+            - maximize_margin
+            - minimize_processing_costs
+            - manage_constraints
+          constraints:
+            - desalter_capacity
+            - heater_fouling_limits
+            - corrosion_considerations
+            - tankage_availability
+      - assess_crude_compatibility:
+          issues:
+            - asphaltene_stability: "Compatibility testing"
+            - sediment_and_water: "BS&W content"
+            - h2s_content: "Safety considerations"
+    outputs:
+      - optimized_crude_blend
+      - blend_schedule
+      - compatibility_assessment
+
+  2_product_slate_definition:
+    name: Product Slate Definition
+    description: Define target products and specifications
+    tasks:
+      - identify_product_mix:
+          light_products:
+            - lpg: "Propane, butane"
+            - light_naphtha: "C5-80°F"
+            - heavy_naphtha: "80-380°F"
+          middle_distillates:
+            - jet_fuel: "130-550°F"
+            - kerosene: "300-550°F"
+            - diesel: "350-650°F"
+          heavy_products:
+            - vgo: "650-1000°F"
+            - vacuum_resid: "> 1000°F"
+            - asphalt: "Resid processing"
+      - define_product_specifications:
+          gasoline:
+            - ron: "Research octane number"
+            - rvp: "Reid vapor pressure"
+            - sulfur: "ppm max"
+            - benzene: "vol% max"
+            - aromatics: "vol% max"
+          diesel:
+            - cetane_number: "Min 40-51"
+            - sulfur: "10-500 ppm"
+            - cloud_point: "Seasonal specs"
+            - density: "kg/m³ range"
+          jet_fuel:
+            - smoke_point: "Min 25 mm"
+            - freeze_point: "Max -40°C"
+            - aromatics: "Max 25 vol%"
+      - estimate_product_volumes:
+          methods:
+            - yield_curves: "From crude assays"
+            - linear_programming: "Optimization model"
+            - historical_data: "For revamps"
+    outputs:
+      - product_specifications_document
+      - volume_targets
+      - seasonal_variations
+
+  3_process_configuration:
+    name: Process Configuration Selection
+    description: Select appropriate process units
+    tasks:
+      - design_atmospheric_distillation:
+          considerations:
+            - capacity: "BPSD (barrels per stream day)"
+            - cut_points: "Based on product specs"
+            - preheat_train: "Pinch analysis"
+            - column_design: "Trays vs packing"
+            - pumparound_duties: "Heat recovery"
+      - evaluate_vacuum_distillation:
+          triggers:
+            - resid_processing: "Yes if resid > 20%"
+            - vgo_production: "For FCC or hydrocracker feed"
+          design_factors:
+            - flash_zone_pressure: "25-40 mmHg"
+            - wash_zone: "Coking prevention"
+            - vacuum_system: "Ejectors or pumps"
+      - select_conversion_units:
+          fcc:
+            - purpose: "Gasoline production from VGO"
+            - feed: "HVGO, coker gas oil"
+            - products: "Gasoline, LCO, coke, LPG"
+          hydrocracker:
+            - purpose: "Middle distillate production"
+            - feed: "VGO, heavy distillates"
+            - products: "Naphtha, jet, diesel"
+          coking:
+            - delayed_coking: "Resid conversion"
+            - fluid_coking: "Continuous operation"
+            - products: "Naphtha, gas oil, coke"
+          visbreaking:
+            - purpose: "Resid viscosity reduction"
+            - severity: "Low conversion"
+      - select_treating_units:
+          naphtha_hydrotreating:
+            - purpose: "Sulfur removal, olefin saturation"
+            - feed: "Straight run, FCC naphtha"
+          distillate_hydrotreating:
+            - purpose: "ULSD production"
+            - feed: "Kerosene, diesel"
+          vgo_hydrotreating:
+            - purpose: "FCC feed pretreatment"
+      - select_upgrading_units:
+          catalytic_reforming:
+            - purpose: "High octane gasoline, hydrogen"
+            - types: "Semi-regenerative, CCR"
+          alkylation:
+            - purpose: "Premium gasoline blending"
+            - feed: "Olefins + isobutane"
+          isomerization:
+            - purpose: "Increase light naphtha octane"
+    outputs:
+      - process_flow_diagram_conceptual
+      - unit_list_with_capacities
+      - major_equipment_list
+
+  4_heat_integration:
+    name: Heat Integration and Utilities
+    description: Optimize heat recovery and utility systems
+    tasks:
+      - perform_pinch_analysis:
+          steps:
+            - develop_composite_curves
+            - determine_minimum_approach_temperature
+            - design_heat_exchanger_network
+            - identify_utility_targets
+          tools:
+            - specialized_software: "Aspen Energy Analyzer, HTRI"
+            - spreadsheet_methods: "For simple cases"
+      - design_fired_heaters:
+          applications:
+            - crude_unit_furnaces
+            - reformer_furnaces
+            - coker_furnaces
+          considerations:
+            - fuel_efficiency: "Excess O2 control"
+            - heat_flux: "Tube metal temperature"
+            - emissions: "NOx, SOx, particulates"
+      - design_steam_system:
+          headers:
+            - high_pressure: "600-1500 psig"
+            - medium_pressure: "150-400 psig"
+            - low_pressure: "< 150 psig"
+          generation:
+            - waste_heat_boilers
+            - utility_boilers
+          balance:
+            - production_vs_consumption
+            - letdown_and_desuperheating
+      - design_cooling_system:
+          options:
+            - air_coolers: "Most common"
+            - cooling_towers: "Wet cooling"
+            - once_through: "Where permitted"
+          considerations:
+            - water_availability
+            - environmental_restrictions
+            - operating_costs
+    outputs:
+      - heat_exchanger_network_design
+      - utility_balance
+      - equipment_specifications
+
+  5_hydrogen_balance:
+    name: Hydrogen Balance and Production
+    description: Optimize hydrogen network
+    tasks:
+      - estimate_hydrogen_demand:
+          consumers:
+            - hydrotreaters: "HDS, HDN"
+            - hydrocrackers: "Conversion"
+            - isomerization: "Saturation"
+          purity_requirements:
+            - high_purity: "> 99% for hydrocracking"
+            - medium_purity: "90-95% for hydrotreating"
+      - identify_hydrogen_sources:
+            - catalytic_reformer: "Byproduct hydrogen"
+            - steam_methane_reformer: "Dedicated production"
+            - hydrogen_recovery: "PSA, membrane"
+            - external_supply: "Pipeline or truck"
+      - optimize_hydrogen_network:
+          strategies:
+            - pressure_optimization: "Minimize compression"
+            - purity_optimization: "Cascade usage"
+            - import_export: "Balance with network"
+          purifiers:
+            - psa: "High purity, high recovery"
+            - membranes: "Lower purity, lower cost"
+    outputs:
+      - hydrogen_balance
+      - production_requirements
+      - network_optimization
+
+  6_environmental_compliance:
+    name: Environmental Compliance Design
+    description: Ensure regulatory compliance
+    tasks:
+      - design_emissions_control:
+          sox_control:
+            - fuel_gas_treating: "Amine scrubbing"
+            - flue_gas_desulfurization: "Scrubbers"
+          nox_control:
+            - low_nox_burners: "Furnace modifications"
+            - scr: "Selective catalytic reduction"
+            - sncr: "Selective non-catalytic"
+          particulates:
+            - esp: "Electrostatic precipitators"
+            - baghouses: "Fabric filters"
+          voc_control:
+            - ldar: "Leak detection and repair"
+            - vapor_recovery: "Tankage and loading"
+      - design_wastewater_treatment:
+          sour_water_stripper: "Remove H2S, NH3"
+          oil_water_separation: "API separators"
+          biological_treatment: "BOD removal"
+          reuse_opportunities: "Cooling tower makeup"
+      - design_solid_waste_handling:
+          catalyst_disposal: "Spent catalyst management"
+          tank_bottoms: "Sludge handling"
+          coke_handling: "If coking unit present"
+    outputs:
+      - emissions_control_design
+      - wastewater_treatment_design
+      - waste_management_plan
+
+  7_safety_systems:
+    name: Safety Systems Design
+    description: Design relief and safety systems
+    tasks:
+      - design_relief_system:
+          standards: "API 520, 521, 526"
+          scenarios:
+            - blocked_outlet: "Most common"
+            - external_fire: "API 521 method"
+            - cooling_failure: "Runaway or expansion"
+            - thermal_expansion: "Liquid-filled"
+          equipment:
+            - relief_valves: "Conventional, balanced bellows"
+            - rupture_disks: "Non-reclosing"
+            - conservation_vents: "Tank protection"
+      - design_flare_system:
+          components:
+            - flare_header: "Collection system"
+            - knockout_drum: "Liquid removal"
+            - seal_drums: "Flashback protection"
+            - flare_stack: "Combustion"
+          capacity: "Total relief load"
+      - design_safety_instrumented_systems:
+          standards: "IEC 61511"
+          functions:
+            - emergency_shutdown: "Unit or plant level"
+            - process_control: "Safety vs control separation"
+          sil_rating: "SIL 1, 2, or 3"
+    outputs:
+      - relief_valve_sizing
+      - flare_system_design
+      - sis_design
+
+  8_economic_evaluation:
+    name: Economic Evaluation
+    description: Assess project economics
+    tasks:
+      - estimate_capital_cost:
+          categories:
+            - inside_battery_limits: "Process units"
+            - outside_battery_limits: "Utilities, tankage"
+            - offsites: "Marine, pipelines"
+            - engineering_and_home_office: "10-20% of above"
+            - contingency: "10-30% depending on definition"
+          accuracy:
+            - conceptual: "±30-50%"
+            - feasibility: "±20-30%"
+            - detailed: "±10-15%"
+      - estimate_operating_cost:
+          variable_costs:
+            - crude_oil: "Primary feedstock"
+            - chemicals: "Catalysts, additives"
+            - utilities: "Energy, water"
+          fixed_costs:
+            - labor: "Operations and maintenance"
+            - maintenance: "4-6% of capital"
+            - insurance: "0.5-1% of capital"
+      - calculate_economics:
+          margin_analysis:
+            - crack_spread: "Product value - crude cost"
+            - net_cash_margin: "After operating costs"
+          investment_metrics:
+            - npv: "Net present value"
+            - irr: "Internal rate of return"
+            - payout: "Discounted or simple"
+      - optimize_configuration:
+          sensitivity_analysis:
+            - crude_price_differentials
+            - product_prices
+            - capital_costs
+            - operating_costs
+    outputs:
+      - capital_cost_estimate
+      - operating_cost_estimate
+      - economic_metrics
+      - optimization_recommendations
+
+outputs:
+  refinery_configuration:
+    process_units: "List with capacities"
+    utilities: "Steam, power, hydrogen, cooling"
+    storage: "Crude and product tankage"
+    offsites: "Marine, rail, truck loading"
+  
+  product_yields:
+    by_product: "Volume percentages"
+    quality: "Key specifications"
+    flexibility: "Operating envelope"
+  
+  economics:
+    capex: "Total capital investment"
+    opex: "Annual operating cost"
+    margin: "Expected gross margin"
+    npv_irr: "Investment metrics"
+  
+  implementation:
+    schedule: "Construction timeline"
+    phases: "If staged implementation"
+    critical_path: "Long lead items"
+
+references:
+  - api: "American Petroleum Institute standards"
+  - gpsa: "Gas Processors Suppliers Association"
+  - meyers: "Petroleum Refining - Robert A. Meyers"
+  - leffler: "Petroleum Refining in Nontechnical Language"

@@ -1,0 +1,321 @@
+workflow:
+  name: extraction_strategy
+  version: 1.0.0
+  description: |
+    Comprehensive workflow for optimizing oil and gas extraction strategies,
+    including primary depletion, secondary recovery, and enhanced oil recovery (EOR)
+    screening and design.
+
+prerequisites:
+  required_data:
+    - reservoir_characterization: porosity, permeability, saturation, fluid properties
+    - production_history: rates, pressures, GOR, WOR
+    - fluid_analysis: PVT data, formation volume factors
+    - geological_model: structure, facies, heterogeneity
+    - economic_parameters: oil_price, gas_price, opex, capex
+  optional_data:
+    - analog_field_data: performance from similar reservoirs
+    - pilot_test_results: EOR pilot performance
+    - laboratory_studies: coreflood, PVT, fluid compatibility
+
+steps:
+
+  1_reservoir_performance_analysis:
+    name: Reservoir Performance Analysis
+    description: Analyze current and historical production performance
+    tasks:
+      - analyze_production_decline:
+          methods:
+            - exponential_decline: "q = qi * exp(-D*t)"
+            - hyperbolic_decline: "q = qi / (1 + b*D*t)^(1/b)"
+            - harmonic_decline: "q = qi / (1 + D*t)"
+          outputs:
+            - decline_rate: "Current decline rate (% per year)"
+            - b_factor: "Hyperbolic decline exponent"
+            - EUR_estimate: "Estimated ultimate recovery"
+      - evaluate_recovery_efficiency:
+          calculations:
+            - current_recovery: "Cumulative production / OOIP"
+            - expected_primary_recovery: "Based on drive mechanism"
+            - recovery_gap: "Expected - Current"
+      - identify_production_bottlenecks:
+          common_issues:
+            - skin_damage: "Near-wellbore formation damage"
+            - conformance_issues: "Channeling, fingering"
+            - pressure_depletion: "Insufficient reservoir pressure"
+            - facility_constraints: "Surface equipment limitations"
+    outputs:
+      - decline_analysis_report
+      - recovery_efficiency_assessment
+      - bottleneck_identification
+
+  2_drive_mechanism_evaluation:
+    name: Drive Mechanism Evaluation
+    description: Assess current and potential drive mechanisms
+    tasks:
+      - identify_current_drive:
+          types:
+            - solution_gas_drive: "Gas cap expansion"
+            - gas_cap_drive: "Free gas cap expansion"
+            - water_drive: "Aquifer influx"
+            - compaction_drive: "Formation compressibility"
+            - gravity_drainage: "Segregated flow"
+      - calculate_drive_indices:
+          formula: "Drive Index = Expansion of phase / Total expansion"
+          phases:
+            - oil_expansion
+            - gas_cap_expansion
+            - water_influx
+            - rock_and_water_expansion
+      - predict_future_performance:
+          scenarios:
+            - continue_primary: "No intervention"
+            - optimize_primary: "Well optimization only"
+            - implement_secondary: "Water or gas injection"
+    outputs:
+      - drive_mechanism_analysis
+      - future_performance_forecast
+
+  3_secondary_recovery_screening:
+    name: Secondary Recovery Screening
+    description: Evaluate waterflooding and gas injection options
+    tasks:
+      - waterflood_feasibility:
+          screening_criteria:
+            - reservoir_quality: "k > 10 md, φ > 15%"
+            - oil_viscosity: "μo < 10 cp preferred"
+            - depth: "> 1000 ft for pressure containment"
+            - dip_angle: "< 30° for gravity stability"
+          pattern_selection:
+            - five_spot: "Good for uniform reservoirs"
+            - nine_spot: "Higher injectivity"
+            - line_drive: "For high dip or anisotropy"
+            - peripheral: "For strong aquifer support"
+      - gas_injection_feasibility:
+          methods:
+            - immiscible_gas: "Pressure maintenance"
+            - miscible_gas: "CO2 or rich hydrocarbon"
+            - WAG: "Water alternating gas"
+          screening_criteria:
+            - pressure: "> MMP for miscible"
+            - oil_gravity: "> 30° API preferred"
+            - depth: "> 2500 ft for CO2"
+      - estimate_secondary_recovery:
+          ranges:
+            - waterflood: "30-50% of OOIP"
+            - gas_injection: "20-40% of OOIP"
+            - WAG: "35-55% of OOIP"
+    outputs:
+      - secondary_recovery_screening_report
+      - recommended_pattern_or_method
+      - incremental_recovery_estimate
+
+  4_eor_screening:
+    name: Enhanced Oil Recovery (EOR) Screening
+    description: Evaluate advanced EOR methods
+    tasks:
+      - thermal_eor:
+          methods:
+            - steam_flooding: "Heavy oil < 25° API"
+            - CSS: "Cyclic steam stimulation"
+            - SAGD: "Steam-assisted gravity drainage"
+            - in_situ_combustion: "Light oils, deep reservoirs"
+          screening_criteria:
+            - oil_viscosity: "> 100 cp for steam"
+            - depth: "< 3000 ft for steam (pressure limit)"
+            - thickness: "> 20 ft preferred"
+            - porosity: "> 20%"
+      - chemical_eor:
+          methods:
+            - polymer_flooding: "Mobility control"
+            - surfactant_flooding: "IFT reduction"
+            - alkaline_flooding: "In situ soap generation"
+            - ASP: "Alkaline-surfactant-polymer"
+          screening_criteria:
+            - temperature: "< 200°F for most chemicals"
+            - salinity: "< 100,000 ppm for polymers"
+            - oil_acid_number: "> 0.2 mg KOH/g for alkaline"
+            - permeability: "> 50 md"
+      - miscible_eor:
+          methods:
+            - CO2_flooding: "Most common miscible process"
+            - hydrocarbon_gas: "Rich gas or LPG"
+            - nitrogen: "Deep, high-pressure reservoirs"
+          screening_criteria:
+            - depth: "> 2500 ft for CO2"
+            - pressure: "> MMP (typically 1200-3000 psi)"
+            - oil_gravity: "> 27° API"
+            - composition: "C5-C12 fraction > 30%"
+      - rank_eor_methods:
+          criteria:
+            - technical_feasibility
+            - incremental_recovery_potential
+            - economic_viability
+            - environmental_impact
+            - operational_complexity
+    outputs:
+      - eor_screening_matrix
+      - ranked_eor_options
+      - preliminary_recovery_estimates
+
+  5_pilot_design:
+    name: Pilot Test Design
+    description: Design field pilot for selected EOR method
+    tasks:
+      - define_pilot_objectives:
+          common_objectives:
+            - validate_recovery_mechanism
+            - test injectivity
+            - evaluate conformance
+            - optimize process_variables
+            - reduce_uncertainty
+      - select_pilot_pattern:
+          considerations:
+            - representative_geology
+            - adequate_thickness
+            - existing_well_availability
+            - monitoring_access
+      - design_monitoring_program:
+          measurements:
+            - injection_rates_and_pressures
+            - production_rates_and_composition
+            - fluid_sampling
+            - tracers
+            - temperature_observation
+            - seismic_monitoring_4D
+      - estimate_pilot_duration:
+          typical_durations:
+            - waterflood: "6-12 months"
+            - chemical: "12-24 months"
+            - CO2: "12-36 months"
+            - thermal: "12-48 months"
+    outputs:
+      - pilot_test_plan
+      - monitoring_program
+      - pilot_budget_estimate
+
+  6_full_field_design:
+    name: Full-Field Implementation Design
+    description: Scale up from pilot to full field
+    tasks:
+      - develop_injection_strategy:
+          elements:
+            - pattern_configuration
+            - well_spacing
+            - injection_rate_schedule
+            - voidage_replacement_ratio
+      - design_surface_facilities:
+            - injection_compression
+            - fluid_treatment
+            - chemical_storage_and_handling
+            - produced_fluid_separation
+      - plan_well_conversions:
+          requirements:
+            - producer_to_injector_conversions
+            - new_well_drilling
+            - well_stimulation
+            - artificial_lift_changes
+      - establish_performance_metrics:
+          kpis:
+            - injection_efficiency
+            - sweep_efficiency
+            - oil_cut_decline
+            - incremental_recovery_factor
+    outputs:
+      - full_field_development_plan
+      - facility_requirements
+      - implementation_schedule
+
+  7_economic_optimization:
+    name: Economic Optimization
+    description: Optimize project economics
+    tasks:
+      - estimate_capex:
+          categories:
+            - drilling_and_completions
+            - surface_facilities
+            - pipelines_and_infrastructure
+            - workovers_and_recompletions
+      - estimate_opex:
+          categories:
+            - injection_fluids
+            - chemicals
+            - energy
+            - personnel
+            - maintenance
+      - run_economics:
+          metrics:
+            - npv_at_various_discount_rates
+            - irr
+            - payout_period
+            - cost_per_incremental_barrel
+      - optimize_timing:
+          considerations:
+            - oil_price_forecast
+            - facility_availability
+            - regulatory_approvals
+            - rig_availability
+    outputs:
+      - economic_model
+      - optimization_recommendations
+      - sensitivity_analysis
+
+  8_risk_assessment:
+    name: Risk Assessment and Mitigation
+    description: Identify and mitigate project risks
+    tasks:
+      - identify_technical_risks:
+          examples:
+            - poor_injectivity
+            - early_breakthrough
+            - scaling_or_fouling
+            - equipment_failure
+      - identify_commercial_risks:
+          examples:
+            - oil_price_volatility
+            - cost_overruns
+            - schedule_delays
+            - regulatory_changes
+      - develop_mitigation_strategies:
+          approaches:
+            - pilot_testing
+            - phased_implementation
+            - flexible_design
+            - insurance
+      - quantify_risk_impact:
+          methods:
+            - tornado_diagrams
+            - monte_carlo_simulation
+            - scenario_analysis
+    outputs:
+      - risk_register
+      - mitigation_plan
+      - probabilistic_economics
+
+outputs:
+  strategy_recommendation:
+    primary_recovery_optimization: "Well work, artificial lift, etc."
+    secondary_recovery_method: "Waterflood or gas injection"
+    eor_method: "If applicable"
+    implementation_phasing: "Pilot to full field"
+    expected_recovery_factor: "Total recovery (% OOIP)"
+    incremental_recovery: "Above primary (% OOIP)"
+  
+  economic_summary:
+    capex_estimate: "Total capital investment"
+    opex_estimate: "Annual operating cost"
+    npv: "Net present value"
+    irr: "Internal rate of return"
+    cost_per_barrel: "$/incremental bbl"
+  
+  implementation_plan:
+    pilot_program: "Duration and scope"
+    full_field_rollout: "Schedule and phases"
+    key_milestones: "Critical decision points"
+    monitoring_requirements: "Data collection plan"
+
+references:
+  - spe: "Society of Petroleum Engineers guidelines"
+  - lake: "Enhanced Oil Recovery - Larry W. Lake"
+  - green_willhite: "Enhanced Oil Recovery - Don W. Green and G. Paul Willhite"
+  - taber: "EOR Screening Criteria - Taber et al."
