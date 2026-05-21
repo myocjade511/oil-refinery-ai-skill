@@ -1,0 +1,302 @@
+workflow:
+  name: reserve_estimation
+  version: 1.0.0
+  description: |
+    Comprehensive reserve estimation workflow covering deterministic and 
+    probabilistic methods for oil and gas reservoirs. Follows SPE-PRMS 
+    (Petroleum Resources Management System) guidelines.
+
+prerequisites:
+  required_data:
+    - well_logs: [GR, RHOB, NPHI, RT, Sonic]
+    - core_data: porosity, permeability, fluid saturation
+    - fluid_analysis: PVT study with formation volume factors
+    - seismic_data: structural maps, depth conversion
+    - pressure_data: initial reservoir pressure, temperature
+  optional_data:
+    - production_history: for decline curve analysis
+    - analogous_fields: for recovery factor benchmarking
+    - well_test_data: pressure transient analysis
+
+steps:
+
+  1_data_validation:
+    name: Data Quality Validation
+    description: Ensure all input data meets quality standards
+    tasks:
+      - verify_log_quality:
+          checks:
+            - depth_matching: "Ensure logs are on consistent depth reference"
+            - environmental_corrections: "Verify borehole corrections applied"
+            - bad_hole_flag: "Identify and flag washout zones"
+            - log_resolution: "Confirm adequate vertical resolution"
+      - validate_core_data:
+          checks:
+            - core_recovery: ">80% recovery preferred"
+            - depth_shifts: "Verify core-log integration"
+            - lab_qa_qc: "Check lab measurement quality"
+      - check_pvt_data:
+          requirements:
+            - fluid_samples: "Representative samples from reservoir"
+            - test_conditions: "Reservoir pressure and temperature"
+            - eos_model: "Equation of state for compositional fluids"
+    outputs:
+      - data_quality_report
+      - validated_data_package
+      - uncertainty_flags
+
+  2_reservoir_characterization:
+    name: Reservoir Characterization
+    description: Define reservoir geometry and properties
+    tasks:
+      - define_reservoir_zones:
+          criteria:
+            - lithology: "Sandstone, carbonate, or unconventional"
+            - fluid_type: "Oil, gas, or condensate"
+            - pressure_regime: "Overpressured, normally pressured, underpressured"
+      - calculate_net_pay:
+          parameters:
+            - cutoff_porosity: "Typically 5-8% for sandstones"
+            - cutoff_water_saturation: "Typically 50-60%"
+            - cutoff_shale_volume: "Typically 30-40%"
+          method: |
+            Net pay = Σ(Thickness × Indicator)
+            where Indicator = 1 if all cutoffs met, else 0
+      - determine_porosity:
+          methods:
+            - density_porosity: "φd = (ρma - ρb) / (ρma - ρfl)"
+            - neutron_porosity: "Corrected for lithology and gas"
+            - sonic_porosity: "Wyllie or Raymer-Hunt-Gardner"
+          calibration: "Core-log porosity transform"
+      - calculate_water_saturation:
+          methods:
+            - archie: "For clean formations"
+            - simandoux: "For shaly sands"
+            - waxman_smits: "For low salinity/high CEC"
+          parameters:
+            - rw: "Formation water resistivity at reservoir temp"
+            - m: "Cementation exponent (1.8-2.2)"
+            - n: "Saturation exponent (1.8-2.5)"
+            - a: "Tortuosity factor (0.62-1.0)"
+      - estimate_permeability:
+          methods:
+            - core_log_transform: "k = f(φ, Swirr) from core"
+            - porosity_permeability: "Log-linear relationship"
+            - flow_zone_indicator: "Kozeny-Carman based"
+    outputs:
+      - net_pay_map
+      - porosity_distribution
+      - saturation_distribution
+      - permeability_model
+
+  3_volume_calculation:
+    name: Bulk Rock Volume Calculation
+    description: Calculate reservoir volume from structural maps
+    tasks:
+      - build_structural_maps:
+          steps:
+            - interpret_top_reservoir: "From seismic and well control"
+            - interpret_base_reservoir: "Using isopach or fluid contact"
+            - define_fluid_contacts: "OWC, GOC, or GWC from logs"
+      - calculate_brv:
+          methods:
+            - planimeter: "Traditional area-thickness method"
+            - grid_based: "Cell-by-cell volume summation"
+            - pyramidal: "For irregular reservoirs"
+          formula: |
+            BRV = Σ(Ai × hi)
+            where Ai = grid cell area, hi = thickness
+      - apply_geologic_factors:
+          considerations:
+            - fault_compartmentalization: "Reduce volume if sealing"
+            - stratigraphic_traps: "Pinchout or truncation limits"
+            - diagenetic_barriers: "Cemented zones"
+    outputs:
+      - bulk_rock_volume
+      - area_extent_map
+      - thickness_distribution
+
+  4_original_hydrocarbons_in_place:
+    name: Calculate OOIP/OGIP
+    description: Determine original hydrocarbons in place
+    tasks:
+      - calculate_ooip:
+          formula: |
+            OOIP (STB) = 7758 × A × h × φ × (1-Sw) / Boi
+            where:
+              A = area (acres)
+              h = net pay thickness (ft)
+              φ = porosity (fraction)
+              Sw = water saturation (fraction)
+              Boi = initial oil formation volume factor (RB/STB)
+      - calculate_ogip:
+          formula: |
+            OGIP (SCF) = 43560 × A × h × φ × (1-Sw) / Bgi
+            where:
+              Bgi = initial gas formation volume factor (cuft/SCF)
+      - calculate_condensate:
+          note: "For gas condensate reservoirs"
+          formula: |
+            Condensate (STB) = OGIP × CGR / 1000000
+            where CGR = condensate-gas ratio (STB/MMSCF)
+    outputs:
+      - deterministic_ooip
+      - deterministic_ogip
+      - by_compartment_breakdown
+
+  5_recovery_factor_estimation:
+    name: Recovery Factor Analysis
+    description: Estimate recoverable fraction of hydrocarbons
+    tasks:
+      - identify_drive_mechanism:
+          types:
+            - solution_gas_drive: "RF typically 5-30%"
+            - gas_cap_drive: "RF typically 20-40%"
+            - water_drive: "RF typically 35-60%"
+            - gravity_drainage: "RF typically 50-80%"
+            - compaction_drive: "RF highly variable"
+      - benchmark_analogous_fields:
+          criteria:
+            - similar_lithology: "Same rock type"
+            - similar_depth: "Comparable pressure/temperature"
+            - similar_fluid: "Oil gravity, GOR"
+            - similar_drive: "Same drive mechanism"
+            - development_strategy: "Primary vs EOR"
+      - estimate_recovery_factor:
+          methods:
+            - analogy: "From analogous fields"
+            - decline_curve: "For producing fields"
+            - material_balance: "From pressure history"
+            - simulation: "Reservoir simulation forecast"
+          ranges:
+            - oil_primary: "5-40% depending on drive"
+            - oil_waterflood: "30-50% typical"
+            - oil_eor: "40-70% with chemical/thermal"
+            - gas_depletion: "70-90% typical"
+    outputs:
+      - recovery_factor_range
+      - drive_mechanism_confidence
+      - analog_field_comparisons
+
+  6_probabilistic_assessment:
+    name: Monte Carlo Simulation
+    description: Generate probabilistic reserve estimates
+    tasks:
+      - define_input_distributions:
+          parameters:
+            - area:
+                distribution: "Triangular or log-normal"
+                basis: "Mapped area with uncertainty"
+            - thickness:
+                distribution: "Normal or log-normal"
+                basis: "Well data statistics"
+            - porosity:
+                distribution: "Normal"
+                basis: "Core/log histogram"
+            - water_saturation:
+                distribution: "Normal or triangular"
+                basis: "Log analysis uncertainty"
+            - recovery_factor:
+                distribution: "Triangular"
+                basis: "Analog range"
+      - run_simulation:
+          settings:
+            - iterations: "Minimum 10,000"
+            - correlation: "Account for parameter dependencies"
+            - seed: "For reproducibility"
+      - analyze_results:
+          outputs:
+            - p10: "High estimate (90% probability)"
+            - p50: "Best estimate (median)"
+            - p90: "Low estimate (10% probability)"
+            - mean: "Expected value"
+            - standard_deviation: "Measure of uncertainty"
+    outputs:
+      - probabilistic_ooip
+      - probabilistic_ogip
+      - probabilistic_reserves
+      - sensitivity_analysis
+
+  7_uncertainty_documentation:
+    name: Uncertainty and Risk Documentation
+    description: Document all uncertainties and their impact
+    tasks:
+      - identify_key_uncertainties:
+          categories:
+            - geologic: "Trap, reservoir, seal"
+            - petrophysical: "Porosity, saturation"
+            - volumetric: "Area, thickness"
+            - recovery: "Drive mechanism, operational"
+      - tornado_analysis:
+          purpose: "Show which parameters drive uncertainty"
+          method: "Vary each parameter ±1 std dev"
+      - scenario_analysis:
+            - base_case: "P50 inputs"
+            - upside_case: "P10 inputs"
+            - downside_case: "P90 inputs"
+    outputs:
+      - uncertainty_matrix
+      - tornado_diagram
+      - scenario_comparison
+
+  8_report_generation:
+    name: Final Report
+    description: Compile all results into standardized report
+    sections:
+      - executive_summary: "Key findings and recommendations"
+      - introduction: "Study objectives and scope"
+      - data_summary: "Input data description and quality"
+      - methodology: "Detailed calculation methods"
+      - results: "Deterministic and probabilistic estimates"
+      - uncertainty_analysis: "Risk and sensitivity assessment"
+      - conclusions: "Summary and next steps"
+      - references: "Data sources and analog fields"
+    outputs:
+      - reserve_estimate_report
+      - economic_model_inputs
+      - certification_package
+
+outputs:
+  deterministic:
+    ooip_stb: "Original oil in place (stock tank barrels)"
+    ogip_scf: "Original gas in place (standard cubic feet)"
+    recoverable_oil: "Estimated ultimate recovery - oil"
+    recoverable_gas: "Estimated ultimate recovery - gas"
+  
+  probabilistic:
+    p10_ooip: "High estimate OOIP"
+    p50_ooip: "Best estimate OOIP"
+    p90_ooip: "Low estimate OOIP"
+    p10_ogip: "High estimate OGIP"
+    p50_ogip: "Best estimate OGIP"
+    p90_ogip: "Low estimate OGIP"
+    p10_reserves: "High estimate recoverable"
+    p50_reserves: "Best estimate recoverable"
+    p90_reserves: "Low estimate recoverable"
+  
+  supporting_data:
+    area_acres: "Drainage area"
+    net_pay_ft: "Net pay thickness"
+    avg_porosity: "Average porosity"
+    avg_sw: "Average water saturation"
+    boi: "Oil formation volume factor"
+    recovery_factor: "Estimated recovery factor"
+    drive_mechanism: "Identified drive mechanism"
+    uncertainty_level: "High/Medium/Low confidence"
+
+quality_checks:
+  - verify_units_consistency
+  - cross_check_with_analogs
+  - validate_recovery_factor_range
+  - confirm_probability_distribution_shapes
+  - review_depth_conversion_accuracy
+  - check_fluid_contact_definitions
+
+references:
+  - spe_prms: "SPE Petroleum Resources Management System 2018"
+  - coalson: "Petroleum Geology - Coalson et al."
+  - cosentino: "Integrated Reservoir Studies - Cosentino"
+  - guidelines:
+      - "SEC regulations for reserves reporting"
+      - "COGE Handbook (Canadian)"
+      - "SRK guidelines for mineral resources"
